@@ -8,6 +8,7 @@ Created on Sat Jul 31 12:15:57 2021
 from typing import Dict
 import random
 import multiprocessing
+from xml.etree.ElementTree import canonicalize
 
 import rdkit
 from rdkit import Chem
@@ -16,6 +17,27 @@ import selfies
 from selfies import encoder, decoder
 
 from .utils import get_selfies_chars
+
+def mutate_smiles(smi):
+    """
+    Given a smile, make random changes to the molecule.
+    Operations to the molecules are:
+    1) Adding a benzene ring
+    2) Deleting a benzene ring
+    3) Breaking apart a molecule into its constituent pieces
+    """
+    print("entering mutate_smiles in mutate_smirks.py")
+    add_ring_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+    add_rxn = Chem.ReactionFromSmarts(add_ring_smirks)
+    reacts= [Chem.MolFromSmile(smi)]
+    products = add_rxn.RunReactants(reacts)    # will be a 2D array
+
+    # pick a random molecule as a result
+    result = random.choice(products)
+
+    print("exiting mutate_smiles in mutate_smirks.py")
+    return Chem.MolToSmiles(result[0], canonicalize=True)
+
 
 def mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet = None):
     """
@@ -39,6 +61,7 @@ def mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet = None):
     Mutated SELFIE string.
 
     """
+    print("entering mutate_sf in mutate_smirks.py")
     if base_alphabet is None:
         base_alphabet = list(selfies.get_semantic_robust_alphabet())
     random_char_idx = random.choice(range(len(sf_chars)))
@@ -78,82 +101,7 @@ def mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet = None):
     return "".join(x for x in change_sf)
 
 
-def mutate_smiles(
-    smile, alphabet, num_random_samples, num_mutations, num_sample_frags, base_alphabet = None
-):
-    """
-    Given an input smile, perform mutations to the strucutre using provided SELFIE
-    alphabet list. 'num_random_samples' number of different SMILES orientations are 
-    considered & total 'num_mutations' are performed. 
 
-    Parameters
-    ----------
-    smile : (str)
-        Valid SMILES string.
-    alphabet : (list of str)
-        list of SELFIE strings.
-    num_random_samples : (int)
-        Number of different SMILES orientations to be formed for the input smile.
-    num_mutations : TYPE
-        Number of mutations to perform on each of different orientations SMILES.
-    num_sample_frags: (int)
-        Number of randomly sampled SELFIE strings.
-
-    Returns
-    -------
-    mutated_smiles_canon : (list of strings)
-        List of unique molecules produced from mutations.
-    """
-    mol = Chem.MolFromSmiles(smile)
-    Chem.Kekulize(mol)
-
-    # Obtain randomized orderings of the SMILES:
-    randomized_smile_orderings = []
-    for _ in range(num_random_samples):
-        randomized_smile_orderings.append(
-            rdkit.Chem.MolToSmiles(
-                mol,
-                canonical=False,
-                doRandom=True,
-                isomericSmiles=False,
-                kekuleSmiles=True,
-            )
-        )
-
-    # Convert all the molecules to SELFIES
-    selfies_ls = [encoder(x) for x in randomized_smile_orderings]
-    selfies_ls_chars = [get_selfies_chars(selfie) for selfie in selfies_ls]
-
-    # Obtain the mutated selfies
-    mutated_sf = []
-    for sf_chars in selfies_ls_chars:
-
-        for i in range(num_mutations):
-            if i == 0:
-                mutated_sf.append(mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet))
-            else:
-                mutated_sf.append(
-                    mutate_sf(
-                        get_selfies_chars(mutated_sf[-1]), alphabet, num_sample_frags, base_alphabet
-                    )
-                )
-
-    mutated_smiles = [decoder(x) for x in mutated_sf]
-    mutated_smiles_canon = []
-    for item in mutated_smiles:
-        try:
-            smi_canon = Chem.MolToSmiles(
-                Chem.MolFromSmiles(item, sanitize=True),
-                isomericSmiles=False,
-                canonical=True,
-            )
-            if smi_canon != "": 
-                mutated_smiles_canon.append(smi_canon)
-        except:
-            continue
-
-    mutated_smiles_canon = list(set(mutated_smiles_canon))
-    return mutated_smiles_canon
 
 
 
