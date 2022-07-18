@@ -17,13 +17,14 @@ def fitness_function(smi: str) -> float:
     # calculatig the % TRE (Topological Resonance Energy) of a molecule
     # currently defined for molecules containing ONLY C and H
     print("entering tre fitness function")
+    print(smi + "\n")
     mol = Chem.MolFromSmiles(smi)
     input_data, _ = coulson.interface.process_rdkit_mol(mol)
     huckel_matrix, electrons = coulson.huckel.prepare_huckel_matrix(
         input_data.atom_types, input_data.connectivity_matrix
     )
     tre, p_tre = coulson.graph_aromaticity.calculate_tre(input_data.connectivity_matrix, sum(electrons))
-    print("exiting tre fitness")
+    print(f"exiting tre fitness for: {smi}\n")
     return p_tre
 
 def custom_filter(smi: str):

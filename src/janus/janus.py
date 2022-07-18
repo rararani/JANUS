@@ -99,8 +99,9 @@ class JANUS:
             self.frag_alphabet.extend(frags)
 
         # get initial fitness
-        with multiprocessing.Pool(self.num_workers) as pool:
-            init_fitness = pool.map(self.fitness_function, init_smiles)
+        # with multiprocessing.Pool(self.num_workers) as pool:
+        #     init_fitness = pool.map(self.fitness_function, init_smiles)
+        init_fitness = [self.fitness_function(smiles) for smiles in init_smiles]
 
         # sort the initial population and save in class
         idx = np.argsort(init_fitness)[::-1]
