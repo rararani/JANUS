@@ -7,11 +7,18 @@ from sympy import product
 
 current_dir = dirname(__file__)
 file_path = join(current_dir, "./DATA/acene_smiles.txt")
+just_benz = join(current_dir, "./DATA/just_benzene.txt")
 
 def mol_with_atom_index(mol):
     for atom in mol.GetAtoms():
         atom.SetAtomMapNum(atom.GetIdx())
     return mol
+
+def fill_file(smi, file_path):
+    file = open(file_path, "w")
+    for i in range(200):
+        file.write(smi + "\n")
+
 
 benzene = 'C1=CC=CC=C1'
 napthalene = 'c1ccc2ccccc2c1'
@@ -47,7 +54,7 @@ if __name__ == "__main__":
     # file.write(benzene + "\n")
 
     # # this one works all the time
-    # for i in range(200):
+    # for i in range(50):
     #     products = reaction.RunReactants(reactants)
     #     mol = products[0][0]
     #     smi = AllChem.MolToSmiles(mol)
@@ -56,50 +63,54 @@ if __name__ == "__main__":
     #     reactants = [Chem.MolFromSmiles(smi)]
     #     print(i)
 
-    # goal: write out the "delete a benzene ring" operation in SMIRKS
+    # just benzene
+    fill_file(benzene, just_benz)
 
-    anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
     
-    # this one will stricly reduce whatever you have to one benzene ring
-    smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
+    # # goal: write out the "delete a benzene ring" operation in SMIRKS
 
-    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+    # anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
+    
+    # # this one will stricly reduce whatever you have to one benzene ring
+    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
 
-    orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
+    # # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
 
-    ri = orig_mol.GetRingInfo()
-    rings = ri.AtomRings()
-    print(rings)
-    del_ring = random.choice(rings)
+    # orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
 
-    # new_rings = []
-    # for ring in rings:
-    #     if ring != del_ring:
-    #         new_rings.append(ring)
+    # ri = orig_mol.GetRingInfo()
+    # rings = ri.AtomRings()
+    # print(rings)
+    # del_ring = random.choice(rings)
 
-    # # construct SMARTS string preserving all carbon atoms except for del_ring
-    # del_smarts = ""
-    # num_rings = len(new_rings)
-    # for i in range(new_rings):
-    #     atoms = new_rings[]
-    #     del_smarts += f"[c:{atoms[i]}]"
-    #     if i == 0:
-    #         del_smarts += "1"
-    # del_smarts += "1"
+    # # new_rings = []
+    # # for ring in rings:
+    # #     if ring != del_ring:
+    # #         new_rings.append(ring)
 
-    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>" + del_smarts
-    # print(smirks)
+    # # # construct SMARTS string preserving all carbon atoms except for del_ring
+    # # del_smarts = ""
+    # # num_rings = len(new_rings)
+    # # for i in range(new_rings):
+    # #     atoms = new_rings[]
+    # #     del_smarts += f"[c:{atoms[i]}]"
+    # #     if i == 0:
+    # #         del_smarts += "1"
+    # # del_smarts += "1"
 
-    rxn = AllChem.ReactionFromSmarts(smirks)
-    reactants = [AllChem.MolFromSmiles(anthracene)]
-    products = rxn.RunReactants(reactants)
+    # # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>" + del_smarts
+    # # print(smirks)
 
-    print(f"Original: {anthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
+    # rxn = AllChem.ReactionFromSmarts(smirks)
+    # reactants = [AllChem.MolFromSmiles(anthracene)]
+    # products = rxn.RunReactants(reactants)
 
-    prod_mol = mol_with_atom_index(products[0][0])
+    # print(f"Original: {anthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
 
-    Draw.MolToFile(orig_mol, "molecule.png")
-    Draw.MolToFile(prod_mol, "molecule1.png")
+    # prod_mol = mol_with_atom_index(products[0][0])
+
+    # Draw.MolToFile(orig_mol, "molecule.png")
+    # Draw.MolToFile(prod_mol, "molecule1.png")
 
 
 

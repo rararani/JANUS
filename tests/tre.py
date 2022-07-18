@@ -39,7 +39,7 @@ def custom_filter(smi: str):
 
 if __name__ == "__main__":
 
-    population_path = join(current_dir, "./DATA/acene_smiles.txt")
+    population_path = join(current_dir, "./DATA/just_benzene.txt")
     params_path = join(current_dir, "./default_params.yml")
 
     print("Start!")
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         # The number of molecules for which fitness calculations are done,
         # exploration and exploitation each have their own population
-        "generation_size": 15,
+        "generation_size": 10,
 
         # Number of molecules that are exchanged between the exploration and exploitation
         "num_exchanges": 5,
