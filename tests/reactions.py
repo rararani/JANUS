@@ -64,53 +64,53 @@ if __name__ == "__main__":
     #     print(i)
 
     # just benzene
-    fill_file(benzene, just_benz)
+    # fill_file(benzene, just_benz)
 
     
-    # # goal: write out the "delete a benzene ring" operation in SMIRKS
+    # goal: write out the "delete a benzene ring" operation in SMIRKS
 
-    # anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
+    anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
     
-    # # this one will stricly reduce whatever you have to one benzene ring
-    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
+    # this one will stricly reduce whatever you have to one benzene ring
+    smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
 
-    # # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
 
-    # orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
+    orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
 
-    # ri = orig_mol.GetRingInfo()
-    # rings = ri.AtomRings()
-    # print(rings)
-    # del_ring = random.choice(rings)
+    ri = orig_mol.GetRingInfo()
+    rings = ri.AtomRings()
+    print(rings)
+    del_ring = random.choice(rings)
 
-    # # new_rings = []
-    # # for ring in rings:
-    # #     if ring != del_ring:
-    # #         new_rings.append(ring)
+    # new_rings = []
+    # for ring in rings:
+    #     if ring != del_ring:
+    #         new_rings.append(ring)
 
-    # # # construct SMARTS string preserving all carbon atoms except for del_ring
-    # # del_smarts = ""
-    # # num_rings = len(new_rings)
-    # # for i in range(new_rings):
-    # #     atoms = new_rings[]
-    # #     del_smarts += f"[c:{atoms[i]}]"
-    # #     if i == 0:
-    # #         del_smarts += "1"
-    # # del_smarts += "1"
+    # # construct SMARTS string preserving all carbon atoms except for del_ring
+    # del_smarts = ""
+    # num_rings = len(new_rings)
+    # for i in range(new_rings):
+    #     atoms = new_rings[]
+    #     del_smarts += f"[c:{atoms[i]}]"
+    #     if i == 0:
+    #         del_smarts += "1"
+    # del_smarts += "1"
 
-    # # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>" + del_smarts
-    # # print(smirks)
+    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>" + del_smarts
+    # print(smirks)
 
-    # rxn = AllChem.ReactionFromSmarts(smirks)
-    # reactants = [AllChem.MolFromSmiles(anthracene)]
-    # products = rxn.RunReactants(reactants)
+    rxn = AllChem.ReactionFromSmarts(smirks)
+    reactants = [AllChem.MolFromSmiles(anthracene)]
+    products = rxn.RunReactants(reactants)
 
-    # print(f"Original: {anthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
+    print(f"Original: {anthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
 
-    # prod_mol = mol_with_atom_index(products[0][0])
+    prod_mol = mol_with_atom_index(products[0][0])
 
-    # Draw.MolToFile(orig_mol, "molecule.png")
-    # Draw.MolToFile(prod_mol, "molecule1.png")
+    Draw.MolToFile(orig_mol, "molecule.png")
+    Draw.MolToFile(prod_mol, "molecule1.png")
 
 
 

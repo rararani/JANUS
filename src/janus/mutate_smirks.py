@@ -11,7 +11,7 @@ import multiprocessing
 from xml.etree.ElementTree import canonicalize
 
 import rdkit
-from rdkit import Chem
+from rdkit.Chem import AllChem
 
 import selfies 
 from selfies import encoder, decoder
@@ -27,16 +27,22 @@ def mutate_smiles(smi):
     3) Breaking apart a molecule into its constituent pieces
     """
     print("entering mutate_smiles in mutate_smirks.py")
+
     add_ring_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
-    add_rxn = Chem.ReactionFromSmarts(add_ring_smirks)
-    reacts= [Chem.MolFromSmile(smi)]
+    add_rxn = AllChem.ReactionFromSmarts(add_ring_smirks)
+
+    reacts= [AllChem.MolFromSmiles(smi)]
+    print(f"Reactant: {smi}")
+    
     products = add_rxn.RunReactants(reacts)    # will be a 2D array
 
     # pick a random molecule as a result
+    print(f"Products: {products}")
     result = random.choice(products)
+    print(result)
 
     print("exiting mutate_smiles in mutate_smirks.py")
-    return Chem.MolToSmiles(result[0], canonicalize=True)
+    return AllChem.MolToSmiles(result[0], canonical=True)
 
 
 def mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet = None):
