@@ -1,3 +1,4 @@
+from dataclasses import replace
 import os, sys
 import multiprocessing
 import random
@@ -79,7 +80,8 @@ class JANUS:
                 line = sanitize_smiles(line.strip())
                 if line is not None:
                     init_smiles.append(line)
-        init_smiles = list(set(init_smiles))  # no duplicates
+        # init_smiles = list(set(init_smiles))  # no duplicates
+        init_smiles = list(init_smiles) # preserving duplicates
 
         # check that parameters are valid
         assert (
@@ -99,9 +101,9 @@ class JANUS:
             self.frag_alphabet.extend(frags)
 
         # get initial fitness
-        # with multiprocessing.Pool(self.num_workers) as pool:
-        #     init_fitness = pool.map(self.fitness_function, init_smiles)
-        init_fitness = [self.fitness_function(smiles) for smiles in init_smiles]
+        with multiprocessing.Pool(self.num_workers) as pool:
+            init_fitness = pool.map(self.fitness_function, init_smiles)
+        # init_fitness = [self.fitness_function(smiles) for smiles in init_smiles]
 
         # sort the initial population and save in class
         idx = np.argsort(init_fitness)[::-1]
@@ -134,8 +136,7 @@ class JANUS:
         else:
             raise ValueError('Invalid space, choose "local" or "explore".')
 
-        # smi_list = smi_list * num_random_samples
-        smi = ''.join(smi_list)
+        smi_list = smi_list * num_random_samples
         with multiprocessing.Pool(self.num_workers) as pool:
             mut_smi_list = pool.map(
                 partial(
@@ -146,7 +147,7 @@ class JANUS:
                     # num_sample_frags=self.num_sample_frags,
                     # base_alphabet=self.alphabet
                 ),
-                smi,
+                smi_list,
             )
         mut_smi_list = self.flatten_list(mut_smi_list)
         print("exiting mutate_smi_list")
@@ -200,7 +201,8 @@ class JANUS:
             keep_smiles, replace_smiles = self.get_good_bad_smiles(
                 self.fitness, self.population, self.generation_size
             )
-            replace_smiles = list(set(replace_smiles))
+            # replace_smiles = list(set(replace_smiles))
+            print(f"Replace smiles: {replace_smiles}")
 
             ### EXPLORATION ###
             # Mutate and crossover (with keep_smiles) molecules that are meant to be replaced
@@ -266,6 +268,7 @@ class JANUS:
 
             # Calculate actual fitness for the exploration population
             self.population = keep_smiles + replaced_pop
+            print(self.population)
             self.fitness = []
             for smi in self.population:
                 if smi in self.smiles_collector:
