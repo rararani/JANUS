@@ -72,9 +72,9 @@ if __name__ == "__main__":
     anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
     
     # this one will stricly reduce whatever you have to one benzene ring
-    smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
+    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
 
-    # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+    smirks = "[c;R1][c;R1][c;R1][c;R1]>>"
 
     orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
 

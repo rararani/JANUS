@@ -215,13 +215,15 @@ class JANUS:
                 )
                 mut_smi_explr = self.check_filters(mut_smi_explr)
 
-                # Crossovers:
-                smiles_join = []
-                for item in replace_smiles[len(replace_smiles) // 2 :]:
-                    smiles_join.append(item + "xxx" + random.choice(keep_smiles))
-                cross_smi_explr = self.crossover_smi_list(smiles_join)
-                cross_smi_explr = self.check_filters(cross_smi_explr)
-
+                # not doing crossovers for now
+                # # Crossovers:
+                # smiles_join = []
+                # for item in replace_smiles[len(replace_smiles) // 2 :]:
+                #     smiles_join.append(item + "xxx" + random.choice(keep_smiles))
+                # cross_smi_explr = self.crossover_smi_list(smiles_join)
+                # cross_smi_explr = self.check_filters(cross_smi_explr)
+                cross_smi_explr = []
+                
                 # Combine and get unique smiles not yet found
                 all_smiles = list(set(mut_smi_explr + cross_smi_explr))
                 for x in all_smiles:
