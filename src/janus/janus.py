@@ -189,6 +189,7 @@ class JANUS:
         """
         print("entering run function")
         for gen_ in range(self.generations):
+            print(f"THIS IS THE BEGINNING OF THE LOOP:{gen_} ")
 
             # bookkeeping
             if self.verbose_out:
@@ -223,7 +224,7 @@ class JANUS:
                 # cross_smi_explr = self.crossover_smi_list(smiles_join)
                 # cross_smi_explr = self.check_filters(cross_smi_explr)
                 cross_smi_explr = []
-                
+
                 # Combine and get unique smiles not yet found
                 all_smiles = list(set(mut_smi_explr + cross_smi_explr))
                 for x in all_smiles:
@@ -435,9 +436,9 @@ class JANUS:
     @staticmethod
     def get_good_bad_smiles(fitness, population, generation_size):
         """
-        Given fitness values of all SMILES in population, and the generation size, 
-        this function smplits  the population into two lists: keep_smiles & replace_smiles. 
-        
+        Given fitness values of all SMILES in population, and the generation size,
+        this function smplits  the population into two lists: keep_smiles & replace_smiles.
+
         Parameters
         ----------
         fitness : (list of floats)
@@ -499,4 +500,3 @@ class JANUS:
     @staticmethod
     def flatten_list(nested_list):
         return [item for sublist in nested_list for item in sublist]
-

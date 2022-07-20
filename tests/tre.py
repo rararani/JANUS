@@ -39,7 +39,7 @@ def custom_filter(smi: str):
 
 if __name__ == "__main__":
 
-    population_path = join(current_dir, "./DATA/just_benzene.txt")
+    population_path = join(current_dir, "./DATA/acene_smiles.txt")
     params_path = join(current_dir, "./default_params.yml")
 
     print("Start!")
@@ -47,11 +47,11 @@ if __name__ == "__main__":
     # all parameters to be set, below are defaults
     params_dict = {
         # Number of iterations that JANUS runs for
-        "generations": 50,
+        "generations": 15,
 
         # The number of molecules for which fitness calculations are done,
         # exploration and exploitation each have their own population
-        "generation_size": 10,
+        "generation_size": 5,
 
         # Number of molecules that are exchanged between the exploration and exploitation
         "num_exchanges": 5,
