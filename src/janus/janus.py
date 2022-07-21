@@ -80,8 +80,7 @@ class JANUS:
                 line = sanitize_smiles(line.strip())
                 if line is not None:
                     init_smiles.append(line)
-        # init_smiles = list(set(init_smiles))  # no duplicates
-        init_smiles = list(init_smiles) # preserving duplicates
+        # init_smiles = list(set(init_smiles)) 
 
         # check that parameters are valid
         assert (
@@ -101,9 +100,11 @@ class JANUS:
             self.frag_alphabet.extend(frags)
 
         # get initial fitness
-        with multiprocessing.Pool(self.num_workers) as pool:
-            init_fitness = pool.map(self.fitness_function, init_smiles)
-        # init_fitness = [self.fitness_function(smiles) for smiles in init_smiles]
+        # with multiprocessing.Pool(self.num_workers) as pool:
+        #     init_fitness = pool.map(self.fitness_function, init_smiles)
+        init_fitness = []
+        for smi in init_smiles:
+            init_fitness.append(self.fitness_function(smi))
 
         # sort the initial population and save in class
         idx = np.argsort(init_fitness)[::-1]
@@ -215,13 +216,15 @@ class JANUS:
                 )
                 mut_smi_explr = self.check_filters(mut_smi_explr)
 
-                # Crossovers:
-                smiles_join = []
-                for item in replace_smiles[len(replace_smiles) // 2 :]:
-                    smiles_join.append(item + "xxx" + random.choice(keep_smiles))
-                cross_smi_explr = self.crossover_smi_list(smiles_join)
-                cross_smi_explr = self.check_filters(cross_smi_explr)
-
+                # not doing crossovers for now
+                # # Crossovers:
+                # smiles_join = []
+                # for item in replace_smiles[len(replace_smiles) // 2 :]:
+                #     smiles_join.append(item + "xxx" + random.choice(keep_smiles))
+                # cross_smi_explr = self.crossover_smi_list(smiles_join)
+                # cross_smi_explr = self.check_filters(cross_smi_explr)
+                cross_smi_explr = []
+                
                 # Combine and get unique smiles not yet found
                 all_smiles = list(set(mut_smi_explr + cross_smi_explr))
                 for x in all_smiles:
