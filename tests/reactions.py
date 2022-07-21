@@ -3,7 +3,6 @@ import random
 
 from rdkit import Chem
 from rdkit.Chem import rdChemReactions, Draw, AllChem
-from sympy import product
 
 current_dir = dirname(__file__)
 file_path = join(current_dir, "./DATA/acene_smiles.txt")
