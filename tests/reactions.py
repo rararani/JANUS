@@ -52,20 +52,20 @@ if __name__ == "__main__":
     # file = open(file_path, "w")
     # file.write(benzene + "\n")
 
-    file = open(file_path, "w")
-    # this one works all the time
-    for j in range(20):
-        smi = benzene
-        reactants = [AllChem.MolFromSmiles(smi)]
-        file.write(benzene + "\n")
-        for i in range(10):
-            products = reaction.RunReactants(reactants)
-            mol = products[0][0]
-            smi = AllChem.MolToSmiles(mol)
-            file.write(smi + "\n")
+    # file = open(file_path, "w")
+    # # this one works all the time
+    # for j in range(20):
+    #     smi = benzene
+    #     reactants = [AllChem.MolFromSmiles(smi)]
+    #     file.write(benzene + "\n")
+    #     for i in range(10):
+    #         products = reaction.RunReactants(reactants)
+    #         mol = products[0][0]
+    #         smi = AllChem.MolToSmiles(mol)
+    #         file.write(smi + "\n")
 
-            reactants = [Chem.MolFromSmiles(smi)]
-            print(i)
+    #         reactants = [Chem.MolFromSmiles(smi)]
+    #         print(i)
 
     # # just benzene
     # fill_file(benzene, just_benz)
@@ -74,14 +74,15 @@ if __name__ == "__main__":
     # goal: write out the "delete a benzene ring" operation in SMIRKS
 
     anthracene = "C1=CC=C2C=C3C=CC=CC3=CC2=C1"
+    benzanthracene = "C1=CC=C2C(=C1)C=CC3=CC4=CC=CC=C4C=C32"
 
     # this one will stricly reduce whatever you have to one benzene ring
     # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>[c:1]1[c:2][c:3][c:8][c:9][c:4]1"
 
-    # smirks = "[c;R1:0][c;R1:1][c;R1:2][c;R1:9]>>[c:3]1[c:4][c:5][c:6][c:7][c:8]1"
-    #
-    # orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(anthracene))
-    #
+    smirks = "[c;R2:1][c;R2:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]>>[c:1][c:2]" # THIS WORKS FOR DELETION
+
+    orig_mol = mol_with_atom_index(AllChem.MolFromSmiles(benzanthracene))
+
     # ri = orig_mol.GetRingInfo()
     # rings = ri.AtomRings()
     # print(rings)
@@ -105,13 +106,13 @@ if __name__ == "__main__":
     # smirks = "[c:1]1[c:3][c:4][c:5][c:6][c:2]1>>" + del_smarts
     # print(smirks)
 
-    # rxn = AllChem.ReactionFromSmarts(smirks)
-    # reactants = [AllChem.MolFromSmiles(anthracene)]
-    # products = rxn.RunReactants(reactants)
-    #
-    # print(f"Original: {anthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
-    #
-    # prod_mol = mol_with_atom_index(products[0][0])
-    #
-    # Draw.MolToFile(orig_mol, "molecule.png")
-    # Draw.MolToFile(prod_mol, "molecule1.png")
+    rxn = AllChem.ReactionFromSmarts(smirks)
+    reactants = [AllChem.MolFromSmiles(benzanthracene)]
+    products = rxn.RunReactants(reactants)
+    
+    print(f"Original: {benzanthracene}\nResult: {AllChem.MolToSmiles(products[0][0])}")
+    
+    prod_mol = mol_with_atom_index(products[0][0])
+    
+    Draw.MolToFile(orig_mol, "molecule.png")
+    Draw.MolToFile(prod_mol, "molecule1.png")
