@@ -7,6 +7,7 @@ Created on Sat Jul 31 16:39:03 2021
 """
 import numpy as np
 import rdkit
+import random
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.DataStructs.cDataStructs import TanimotoSimilarity
@@ -232,21 +233,34 @@ def crossover_smiles(smiles_join, crossover_num_random_samples):
         List of crossover molecules that are ordered (highest to lowest)
         by joint similarity scores.
     """
-    map_ = {}
+    # map_ = {}
 
-    map_[smiles_join] = perform_crossover(
-        smiles_join, num_random_samples=crossover_num_random_samples
-    )
+    # map_[smiles_join] = perform_crossover(
+    #     smiles_join, num_random_samples=crossover_num_random_samples
+    # )
+    smi_1, smi_2 = smiles_join.split("xxx")
+    fuse_smirks = "[c:1][c;H1:2][c;H1:3][c:4].[c:5][c;H1:6][c;H1:7][c:8]>>[c:1][c:2]([c:5])[c:3]([c:4])[c:8]"
+    fuse_rxn = AllChem.ReactionFromSmarts(fuse_smirks)
 
-    # map_ordered = {}
-    for key_ in map_:
-        med_all = map_[key_]
-        smi_1, smi_2 = key_.split("xxx")
-        joint_sim = get_joint_sim(med_all, smi_1, smi_2)
+    products = fuse_rxn.RunReactants([AllChem.MolFromSmiles(smi_1), AllChem.MolFromSmiles(smi_2)])
+    print(f"Fusing {smi_1} and {smi_2} together")
 
-        joint_sim_ord = np.argsort(joint_sim)
-        joint_sim_ord = joint_sim_ord[::-1]
+    # pick a random product
+    print(f"Products from Crossover: {products}")
+    result = random.choice(products)
 
-        med_all_ord = [med_all[i] for i in joint_sim_ord]
+    return AllChem.MolToSmiles(result[0], canonical=True)
 
-    return med_all_ord
+
+    # # map_ordered = {}
+    # for key_ in map_:
+    #     med_all = map_[key_]
+    #     smi_1, smi_2 = key_.split("xxx")
+    #     joint_sim = get_joint_sim(med_all, smi_1, smi_2)
+
+    #     joint_sim_ord = np.argsort(joint_sim)
+    #     joint_sim_ord = joint_sim_ord[::-1]
+
+    #     med_all_ord = [med_all[i] for i in joint_sim_ord]
+
+    # return med_all_ord

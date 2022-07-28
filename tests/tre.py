@@ -47,14 +47,14 @@ if __name__ == "__main__":
     # all parameters to be set, below are defaults
     params_dict = {
         # Number of iterations that JANUS runs for
-        "generations": 15,
+        "generations": 7,
 
         # The number of molecules for which fitness calculations are done,
         # exploration and exploitation each have their own population
-        "generation_size": 5,
+        "generation_size": 3,
 
         # Number of molecules that are exchanged between the exploration and exploitation
-        "num_exchanges": 5,
+        "num_exchanges": 2,
 
         # Callable filtering function (None defaults to no filtering)
         "custom_filter": custom_filter,

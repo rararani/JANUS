@@ -29,12 +29,23 @@ def mutate_smiles(smi):
     print("entering mutate_smiles in mutate_smirks.py")
 
     add_ring_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+    del_ring_smirks = "[c;R2:1][c;R2:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]>>[c:1][c:2]"
+    
     add_rxn = AllChem.ReactionFromSmarts(add_ring_smirks)
+    del_rxn = AllChem.ReactionFromSmarts(del_ring_smirks)
 
     reacts= [AllChem.MolFromSmiles(smi)]
     print(f"Reactant: {smi}")
 
-    products = add_rxn.RunReactants(reacts)    # will be a 2D array
+    choice = random.randint(0,1)
+    print(f"Choice: {choice}")
+
+    if choice == 0 and len(smi) > 8:
+        products = del_rxn.RunReactants(reacts)    # will be a 2D array
+        print("Delete a benzene ring")
+    else:
+        products = add_rxn.RunReactants(reacts)
+        print("Add a benzene ring")
 
     # pick a random molecule as a result
     print(f"Products: {products}")

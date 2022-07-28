@@ -47,7 +47,8 @@ def get_frags(smi, radius):
         submol = Chem.PathToSubmol(mol, env, atomMap=amap)
         frag = mol2smi(submol, isomericSmiles=False, canonical=True)
         frags.append(frag)
-    return list(filter(None, list(set(frags))))
+    return list(filter(None, frags))
+    # return list(filter(None, list(set(frags))))
 
 def form_fragments(smi):
     ''' Create fragments of certain radius. Returns a list of fragments

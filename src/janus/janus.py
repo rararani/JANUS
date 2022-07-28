@@ -9,7 +9,7 @@ from typing import Callable, List, Optional
 
 import numpy as np
 
-from .crossover import crossover_smiles
+from .crossover_smirks import crossover_smiles
 from .mutate_smirks import mutate_smiles
 from .network import create_and_train_network, obtain_model_pred
 from .utils import sanitize_smiles, get_fp_scores
@@ -218,14 +218,12 @@ class JANUS:
                 )
                 mut_smi_explr = self.check_filters(mut_smi_explr)
 
-                # not doing crossovers for now
-                # # Crossovers:
-                # smiles_join = []
-                # for item in replace_smiles[len(replace_smiles) // 2 :]:
-                #     smiles_join.append(item + "xxx" + random.choice(keep_smiles))
-                # cross_smi_explr = self.crossover_smi_list(smiles_join)
-                # cross_smi_explr = self.check_filters(cross_smi_explr)
-                cross_smi_explr = []
+                # Crossovers:
+                smiles_join = []
+                for item in replace_smiles[len(replace_smiles) // 2 :]:
+                    smiles_join.append(item + "xxx" + random.choice(keep_smiles))
+                cross_smi_explr = self.crossover_smi_list(smiles_join)
+                cross_smi_explr = self.check_filters(cross_smi_explr)
                 
                 # Combine and get unique smiles not yet found
                 all_smiles = list(set(mut_smi_explr + cross_smi_explr))
