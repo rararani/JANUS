@@ -11,7 +11,7 @@ generations: 7
 num_exchanges: 2
 num_sample_frags: 200
 num_workers: 12
-start_population: c:\Users\rajvi\projects\JANUS\tests\./DATA/acene_smiles.txt
+start_population: c:/Users/rajvi/projects/JANUS/tests\./DATA/acene_smiles.txt
 top_mols: 1
 use_classifier: true
 use_fragments: true

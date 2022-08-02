@@ -144,7 +144,7 @@ class JANUS:
                 partial(
                     mutate_smiles,
                     # alphabet=self.frag_alphabet,
-                    # num_random_samples=1,
+                    num_random_samples=1
                     # num_mutations=num_mutations,
                     # num_sample_frags=self.num_sample_frags,
                     # base_alphabet=self.alphabet
@@ -338,10 +338,7 @@ class JANUS:
                         exploit_smiles.append(x)
 
                 timeout_counter += 1
-                if timeout_counter % 10 == 0:
-                    pop = population_sort[0 : self.top_mols]
-                    exploit_smiles = population_sort[0 : self.top_mols].append(exploit_smiles)
-                    break
+                if timeout_counter % 100 == 0:
                     print(f'Exploitation: {timeout_counter} iterations of filtering. \
                     Filter may be too strict, or you need more mutations/crossovers.')
 

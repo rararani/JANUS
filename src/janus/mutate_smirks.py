@@ -19,7 +19,7 @@ from torch import fill_
 
 from .utils import get_selfies_chars
 
-def mutate_smiles(smi):
+def mutate_smiles(smi, num_random_samples = 1):
     """
     Given a smile, make random changes to the molecule.
     Operations to the molecules are:
@@ -37,26 +37,37 @@ def mutate_smiles(smi):
     del_rxn = AllChem.ReactionFromSmarts(del_ring_smirks)
     fill_bay_area_rxn = AllChem.ReactionFromSmarts(fill_bay_area_smirks)
 
-    reacts= [AllChem.MolFromSmiles(smi)]
-    print(f"Reactant: {smi}")
+    for _ in range(num_random_samples):
+        reacts= [AllChem.MolFromSmiles(smi)]
+        print(f"Reactant: {smi}")
 
-    choice = random.randint(0,2)
-    print(f"Choice: {choice}")
+        choice = random.randint(0,2)
+        print(f"Choice: {choice}")
 
-    if choice == 0 and len(smi) > 8:
-        products = del_rxn.RunReactants(reacts)    # will be a 2D array
-        print("Delete a benzene ring")
-    elif choice == 1:
-        products = add_rxn.RunReactants(reacts)
-        print("Add a benzene ring")
-    else:
-        products = fill_bay_area_rxn.RunReactants(reacts)
-        print("Filling out Bay Area")
+        if choice == 0 and len(smi) > 8:
+            products = del_rxn.RunReactants(reacts)    # will be a 2D array
+            print("Delete a benzene ring")
+        elif choice == 1:
+            products = add_rxn.RunReactants(reacts)
+            print("Add a benzene ring")
+        else:
+            products = fill_bay_area_rxn.RunReactants(reacts)
+            print("Filling out Bay Area")
+        
+        print(f"Length of Products: {len(products)}")
+        if num_random_samples > 1:
+            products = []
+            new_reactants = random.sample(products, k=3)
+            for reactant in new_reactants:
+                products.extend(mutate_smiles(AllChem.MolToSmiles(reactant[0], canonical=True), num_random_samples=1))
+            
+            # in this case will be a list of smiles
+            return products
 
-    # # pick a random molecule as a result
-    # print(f"Products: {products}")
-    # result = random.choice(products)
-    # print(result)
+        # # pick a random molecule as a result
+        # print(f"Products: {products}")
+        # result = random.choice(products)
+        # print(result)
 
     print("exiting mutate_smiles in mutate_smirks.py")
     smiles = [AllChem.MolToSmiles(mol[0], canonical=True) for mol in products]
