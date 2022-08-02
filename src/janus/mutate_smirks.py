@@ -15,6 +15,7 @@ from rdkit.Chem import AllChem
 
 import selfies
 from selfies import encoder, decoder
+from torch import fill_
 
 from .utils import get_selfies_chars
 
@@ -30,30 +31,38 @@ def mutate_smiles(smi):
 
     add_ring_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
     del_ring_smirks = "[c;R2:1][c;R2:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]>>[c:1][c:2]"
+    fill_bay_area_smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
     
     add_rxn = AllChem.ReactionFromSmarts(add_ring_smirks)
     del_rxn = AllChem.ReactionFromSmarts(del_ring_smirks)
+    fill_bay_area_rxn = AllChem.ReactionFromSmarts(fill_bay_area_smirks)
 
     reacts= [AllChem.MolFromSmiles(smi)]
     print(f"Reactant: {smi}")
 
-    choice = random.randint(0,1)
+    choice = random.randint(0,2)
     print(f"Choice: {choice}")
 
     if choice == 0 and len(smi) > 8:
         products = del_rxn.RunReactants(reacts)    # will be a 2D array
         print("Delete a benzene ring")
-    else:
+    elif choice == 1:
         products = add_rxn.RunReactants(reacts)
         print("Add a benzene ring")
+    else:
+        products = fill_bay_area_rxn.RunReactants(reacts)
+        print("Filling out Bay Area")
 
-    # pick a random molecule as a result
-    print(f"Products: {products}")
-    result = random.choice(products)
-    print(result)
+    # # pick a random molecule as a result
+    # print(f"Products: {products}")
+    # result = random.choice(products)
+    # print(result)
 
     print("exiting mutate_smiles in mutate_smirks.py")
-    return AllChem.MolToSmiles(result[0], canonical=True)
+    smiles = [AllChem.MolToSmiles(mol[0], canonical=True) for mol in products]
+
+    return smiles
+    # return AllChem.MolToSmiles(result[0], canonical=True)
 
 # not implemented
 # def mutate_sf(sf_chars, alphabet, num_sample_frags, base_alphabet = None):

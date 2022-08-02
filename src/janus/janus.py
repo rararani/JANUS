@@ -38,11 +38,11 @@ class JANUS:
         use_fragments: Optional[bool] = True,
         num_sample_frags: Optional[int] = 200,
         use_classifier: Optional[bool] = True,
-        explr_num_random_samples: Optional[int] = 5,
-        explr_num_mutations: Optional[int] = 5,
+        explr_num_random_samples: Optional[int] = 1,
+        explr_num_mutations: Optional[int] = 1,
         crossover_num_random_samples: Optional[int] = 1,
-        exploit_num_random_samples: Optional[int] = 400,
-        exploit_num_mutations: Optional[int] = 400,
+        exploit_num_random_samples: Optional[int] = 1,
+        exploit_num_mutations: Optional[int] = 1,
         top_mols: Optional[int] = 1
     ):
         print("entered the init func of janus")
@@ -138,7 +138,7 @@ class JANUS:
         else:
             raise ValueError('Invalid space, choose "local" or "explore".')
 
-        smi_list = smi_list * num_random_samples
+        # smi_list = smi_list * num_random_samples
         with multiprocessing.Pool(self.num_workers) as pool:
             mut_smi_list = pool.map(
                 partial(
@@ -204,7 +204,7 @@ class JANUS:
             keep_smiles, replace_smiles = self.get_good_bad_smiles(
                 self.fitness, self.population, self.generation_size
             )
-            # replace_smiles = list(set(replace_smiles))
+            replace_smiles = list(set(replace_smiles))
             print(f"Replace smiles: {replace_smiles}")
 
             ### EXPLORATION ###
@@ -338,7 +338,10 @@ class JANUS:
                         exploit_smiles.append(x)
 
                 timeout_counter += 1
-                if timeout_counter % 100 == 0:
+                if timeout_counter % 10 == 0:
+                    pop = population_sort[0 : self.top_mols]
+                    exploit_smiles = population_sort[0 : self.top_mols].append(exploit_smiles)
+                    break
                     print(f'Exploitation: {timeout_counter} iterations of filtering. \
                     Filter may be too strict, or you need more mutations/crossovers.')
 

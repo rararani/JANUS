@@ -25,7 +25,7 @@ def fitness_function(smi: str) -> float:
     )
     tre, p_tre = coulson.graph_aromaticity.calculate_tre(input_data.connectivity_matrix, sum(electrons))
     print(f"exiting tre fitness for: {smi}\n")
-    return p_tre
+    return -p_tre
 
 def custom_filter(smi: str):
     """ Function that takes in a smile and returns a boolean.

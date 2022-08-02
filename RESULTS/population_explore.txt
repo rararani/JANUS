@@ -1,1 +1,1 @@
-C1=C=CC=CC=1 C1=CC=C=CC=1 C1=C=C=CC=C=1 c1ccccc1 c1ccccc1 C1=C=CCCC=1 C1=CCCCC=1 C1=CCCCC1 C1=CC=CCC=1 C1=CCCC=C1 
+c1ccc2cc3cc4cc5cc6cc7cc8cc9cc%10cc%11ccccc%11cc%10cc9cc8cc7cc6cc5cc4cc3cc2c1 c1ccc2cc3cc4cc5cc6cc7cc8ccccc8cc7cc6cc5cc4cc3cc2c1 c1ccc2cc3cc4cc5cc6cc7cc8cc9c(ccc%10ccccc%109)cc8cc7cc6cc5cc4cc3cc2c1 

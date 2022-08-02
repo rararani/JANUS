@@ -26,6 +26,9 @@ napthalene = 'c1ccc2ccccc2c1'
 smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
 reaction = AllChem.ReactionFromSmarts(smirks)
 
+# fill out bay area
+smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
+
 if __name__ == "__main__":
     # print(AllChem.MolToSmiles(products[0][0]))
     # print(len(products[0]))
@@ -118,3 +121,5 @@ if __name__ == "__main__":
     # Draw.MolToFile(orig_mol, "molecule.png")
     # Draw.MolToFile(prod_mol, "molecule1.png")
     # Draw.MolToFile(prod2_mol, "molecule2.png")
+
+    # Draw.MolToFile(AllChem.MolFromSmiles("c1ccc2ccccc2c1"), "molecule3.png")

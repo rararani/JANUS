@@ -1,0 +1,3 @@
+Gen:0, c1ccc2ccccc2c1, 2.9243650595037995 
+Gen:1, c1ccc2c(c1)c1ccccc1c1ccccc21, 3.012308779393399 
+Gen:2, c1ccc2c(c1)c1ccccc1c1ccccc21, 3.012308779393399 
