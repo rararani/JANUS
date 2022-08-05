@@ -38,11 +38,11 @@ class JANUS:
         use_fragments: Optional[bool] = True,
         num_sample_frags: Optional[int] = 200,
         use_classifier: Optional[bool] = True,
-        explr_num_random_samples: Optional[int] = 1,
-        explr_num_mutations: Optional[int] = 1,
+        explr_num_random_samples: Optional[int] = 5,
+        explr_num_mutations: Optional[int] = 5,
         crossover_num_random_samples: Optional[int] = 1,
-        exploit_num_random_samples: Optional[int] = 1,
-        exploit_num_mutations: Optional[int] = 1,
+        exploit_num_random_samples: Optional[int] = 400,
+        exploit_num_mutations: Optional[int] = 400,
         top_mols: Optional[int] = 1
     ):
         print("entered the init func of janus")
@@ -144,7 +144,7 @@ class JANUS:
                 partial(
                     mutate_smiles,
                     # alphabet=self.frag_alphabet,
-                    num_random_samples=1
+                    num_mutations=num_mutations
                     # num_mutations=num_mutations,
                     # num_sample_frags=self.num_sample_frags,
                     # base_alphabet=self.alphabet
@@ -204,7 +204,7 @@ class JANUS:
             keep_smiles, replace_smiles = self.get_good_bad_smiles(
                 self.fitness, self.population, self.generation_size
             )
-            replace_smiles = list(set(replace_smiles))
+            replace_smiles = list(replace_smiles)
             print(f"Replace smiles: {replace_smiles}")
 
             ### EXPLORATION ###

@@ -18,18 +18,41 @@ def fill_file(smi, file_path):
     for i in range(200):
         file.write(smi + "\n")
 
+def generate_molecules(smi, rxn, num_generations=10):
+    new_mols = []
+    mol = AllChem.MolFromSmiles(smi)
+    reactants = [mol]
+    for _ in range(num_generations):
+        products = rxn.RunReactants(reactants)
+        new_mols.extend(products)
+        if num_generations > 1:
+            for product in products:
+                new_mols.extend(generate_molecules(AllChem.MolToSmiles(product[0]), rxn, num_generations=1))
+    
+    return new_mols
+
+def load_file_with_new_molecules(file_path, smi, rxn):
+    file = open(file_path, "w")
+    molecules = generate_molecules(smi, rxn)
+    for molecule in molecules:
+        file.write(AllChem.MolToSmiles(molecule[0]) + "\n")
+
 
 benzene = 'C1=CC=CC=C1'
 napthalene = 'c1ccc2ccccc2c1'
+anthracene = 'C1=CC=C2C=C3C=CC=CC3=CC2=C1'
+unknown_mol = 'c1ccc2cc3cc4cc5cc6cc7cc8cc9cc%10cc%11ccccc%11cc%10cc9cc8cc7cc6cc5cc4cc3cc2c1'
 
 # add a benzene ring
-smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
-reaction = AllChem.ReactionFromSmarts(smirks)
+add_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
+add_reaction = AllChem.ReactionFromSmarts(add_smirks)
 
 # fill out bay area
-smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
+bay_smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
 
 if __name__ == "__main__":
+    load_file_with_new_molecules(file_path, napthalene, add_reaction)
+    
     # print(AllChem.MolToSmiles(products[0][0]))
     # print(len(products[0]))
     # print(len(products))
@@ -55,20 +78,20 @@ if __name__ == "__main__":
     # file = open(file_path, "w")
     # file.write(benzene + "\n")
 
-    file = open(file_path, "w")
-    # this one works all the time
-    # for j in range(20):
-    smi = benzene
-    reactants = [AllChem.MolFromSmiles(smi)]
-    # file.write(benzene + "\n")
-    for i in range(10):
-        products = reaction.RunReactants(reactants)
-        mol = products[0][0]
-        smi = AllChem.MolToSmiles(mol)
-        file.write(smi + "\n")
+    # file = open(file_path, "w")
+    # # this one works all the time
+    # # for j in range(20):
+    # smi = benzene
+    # reactants = [AllChem.MolFromSmiles(smi)]
+    # # file.write(benzene + "\n")
+    # for i in range(10):
+    #     products = reaction.RunReactants(reactants)
+    #     for mol in products:
+    #         smi = AllChem.MolToSmiles(mol[0])
+    #         file.write(smi + "\n")
 
-        reactants = [Chem.MolFromSmiles(smi)]
-        print(i)
+    #     reactants = [Chem.MolFromSmiles(smi)]
+    #     print(i)
 
     # # just benzene
     # fill_file(benzene, just_benz)
@@ -123,3 +146,27 @@ if __name__ == "__main__":
     # Draw.MolToFile(prod2_mol, "molecule2.png")
 
     # Draw.MolToFile(AllChem.MolFromSmiles("c1ccc2ccccc2c1"), "molecule3.png")
+
+    # napthalene_mol = AllChem.MolFromSmiles(napthalene)
+    # reactants = [napthalene_mol]
+    # add_rxn = AllChem.ReactionFromSmarts(add_smirks)
+    # products = add_rxn.RunReactants(reactants)
+
+    # print(len(products))
+
+    # bay_rxn = AllChem.ReactionFromSmarts(bay_smirks)
+    # print(products[1][0])
+    # smi = AllChem.MolToSmiles(products[1][0])
+    # mol = AllChem.MolFromSmiles(smi)
+    # Draw.MolToFile(mol, "bay_mol.png")
+
+    # reactants = [mol]
+    # products = bay_rxn.RunReactants(reactants)
+
+    # print(f"The # of products after bay fill operation: {len(products)}")
+
+    # for i in range(len(products)):
+    #     Draw.MolToFile(products[i][0], f"molecule{i}.png")
+
+    # mol = AllChem.MolFromSmiles(unknown_mol)
+    # Draw.MolToFile(mol, "molecule.png")
