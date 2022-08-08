@@ -328,6 +328,7 @@ class JANUS:
             exploit_smiles = []
             timeout_counter = 0
             while len(exploit_smiles) < self.generation_size:
+                print(f"EXPLOIT SMILES LENGTH: {len(exploit_smiles)}\n GENERATION SIZE :{self.generation_size}")
                 smiles_local_search = population_sort[0 : self.top_mols]
                 mut_smi_loc = self.mutate_smi_list(smiles_local_search, "local")
                 mut_smi_loc = self.check_filters(mut_smi_loc)

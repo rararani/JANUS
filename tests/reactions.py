@@ -3,6 +3,7 @@ import random
 
 from rdkit import Chem
 from rdkit.Chem import rdChemReactions, Draw, AllChem
+from sympy import product
 
 current_dir = dirname(__file__)
 file_path = join(current_dir, "./DATA/acene_smiles.txt")
@@ -47,11 +48,20 @@ unknown_mol = 'c1ccc2cc3cc4cc5cc6cc7cc8cc9cc%10cc%11ccccc%11cc%10cc9cc8cc7cc6cc5
 add_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
 add_reaction = AllChem.ReactionFromSmarts(add_smirks)
 
+break_smirks = "[c;R2:1]1([c:2][c:3][c:4][c:5]2)[c;R2:6]2[c:7][c:8][c:9][c:10]1>>[c:1]1[c:2][c:3][c:4][c:5][c:6]1.[c:11]1[c:12][c:7][c:8][c:9][c:10]1"
+break_reaction = AllChem.ReactionFromSmarts(break_smirks)
+
 # fill out bay area
 bay_smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
 
 if __name__ == "__main__":
-    load_file_with_new_molecules(file_path, napthalene, add_reaction)
+    # load_file_with_new_molecules(file_path, napthalene, add_reaction)
+    anthracene_mol = AllChem.MolFromSmiles(anthracene)
+    reactants = [anthracene_mol]
+    products = break_reaction.RunReactants(reactants)
+    mol = products[1][0]
+    print(len(products))
+    Draw.MolToFile(mol, "molecule.png")
     
     # print(AllChem.MolToSmiles(products[0][0]))
     # print(len(products[0]))
