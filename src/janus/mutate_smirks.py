@@ -8,7 +8,6 @@ Created on Sat Jul 31 12:15:57 2021
 from typing import Dict
 import random
 import multiprocessing
-from xml.etree.ElementTree import canonicalize
 
 import rdkit
 from rdkit.Chem import AllChem
@@ -28,7 +27,7 @@ def mutate_smiles(smi, num_mutations = 1):
     2) Deleting a benzene ring
     3) Breaking apart a molecule into its constituent pieces
     """
-    print("entering mutate_smiles in mutate_smirks.py")
+    # print("entering mutate_smiles in mutate_smirks.py")
 
     add_ring_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
     del_ring_smirks = "[c;R2:1][c;R2:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]>>[c:1][c:2]"
@@ -44,12 +43,12 @@ def mutate_smiles(smi, num_mutations = 1):
 
     if mol_from_smiles != None:
         reacts= [mol_from_smiles]
-        print(f"Reactant: {smi}")
+        # print(f"Reactant: {smi}")
 
         for _ in range(num_mutations):
 
             choice = random.randint(0,3)
-            print(f"Choice: {choice}")
+            # print(f"Choice: {choice}")
 
             # first check if there even is a bay area to fill
             bay_area_prods = fill_bay_rxn.RunReactants(reacts)
@@ -57,18 +56,18 @@ def mutate_smiles(smi, num_mutations = 1):
             # let's first start off with adding and deleting benzene ring operations
             if choice == 0 and len(bay_area_prods) > 0:
                 products = bay_area_prods
-                print("Fill Bay area operation was selected and was valid.")
+                # print("Fill Bay area operation was selected and was valid.")
             elif choice == 1 and len(smi) > 8:
                 products = del_rxn.RunReactants(reacts)
-                print("Deleted a benzene ring was selected and was valid.")
+                # print("Deleted a benzene ring was selected and was valid.")
             elif choice == 2:
                 products = add_rxn.RunReactants(reacts)
-                print("Added a benzene ring.")
+                # print("Added a benzene ring.")
             else:
                 products = break_mol_rxn.RunReactants(reacts)
-                print("Broke molecule into constituent parts.")
+                # print("Broke molecule into constituent parts.")
 
-            print(f"Length of Products: {len(products)}")
+            # print(f"Length of Products: {len(products)}")
             if num_mutations > 1:
                 new_products = [AllChem.MolToSmiles(mol[0], canonical=True) for mol in products]
                 if len(products) >= 3:
@@ -84,7 +83,7 @@ def mutate_smiles(smi, num_mutations = 1):
             # result = random.choice(products)
             # print(result)
 
-        print("exiting mutate_smiles in mutate_smirks.py")
+        # print("exiting mutate_smiles in mutate_smirks.py")
         smiles = [AllChem.MolToSmiles(mol[0], canonical=True) for mol in products]
         
         return smiles

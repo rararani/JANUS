@@ -243,7 +243,7 @@ def crossover_smiles(smiles_join, crossover_num_random_samples):
     fuse_rxn = AllChem.ReactionFromSmarts(fuse_smirks)
 
     products = fuse_rxn.RunReactants([AllChem.MolFromSmiles(smi_1), AllChem.MolFromSmiles(smi_2)])
-    print(f"Fusing {smi_1} and {smi_2} together")
+    # print(f"Fusing {smi_1} and {smi_2} together")
 
     # # pick a random product
     # print(f"Products from Crossover: {products}")

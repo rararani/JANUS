@@ -45,7 +45,7 @@ class JANUS:
         exploit_num_mutations: Optional[int] = 400,
         top_mols: Optional[int] = 1
     ):
-        print("entered the init func of janus")
+        # print("entered the init func of janus")
         # set all class variables
         self.work_dir = work_dir
         self.fitness_function = fitness_function
@@ -81,7 +81,7 @@ class JANUS:
                 if line is not None:
                     init_smiles.append(line)
 
-        # init_smiles = list(set(init_smiles)) 
+        # init_smiles = list(set(init_smiles))
 
         # check that parameters are valid
         assert (
@@ -124,11 +124,11 @@ class JANUS:
         )
         for smi, count, i in zip(uniq_pop, counts, idx):
             self.smiles_collector[smi] = [self.fitness[i], count]
-        print("exiting init function")
+        # print("exiting init function")
 
     def mutate_smi_list(self, smi_list: List[str], space="local"):
         # parallelized mutation function
-        print("entering mutate_smi_list")
+        # print("entering mutate_smi_list")
         if space == "local":
             num_random_samples = self.exploit_num_random_samples
             num_mutations = self.exploit_num_mutations
@@ -152,12 +152,12 @@ class JANUS:
                 smi_list,
             )
         mut_smi_list = self.flatten_list(mut_smi_list)
-        print("exiting mutate_smi_list")
+        # print("exiting mutate_smi_list")
         return mut_smi_list
 
     def crossover_smi_list(self, smi_list: List[str]):
         # parallelized crossover function
-        print("entering crossover_smi_list")
+        # print("entering crossover_smi_list")
         with multiprocessing.Pool(self.num_workers) as pool:
             cross_smi = pool.map(
                 partial(
@@ -167,29 +167,29 @@ class JANUS:
                 smi_list,
             )
         cross_smi = self.flatten_list(cross_smi)
-        print("exiting crossover_smi_list")
+        # print("exiting crossover_smi_list")
         return cross_smi
 
     def check_filters(self, smi_list: List[str]):
-        print("entering check filters")
+        # print("entering check filters")
         if self.custom_filter is not None:
             smi_list = [smi for smi in smi_list if self.custom_filter(smi)]
-        print("exiting check filters")
+        # print("exiting check filters")
         return smi_list
 
     def save_hyperparameters(self):
-        print("entering save_hyperparams")
+        # print("entering save_hyperparams")
         hparams = {
             k: v if not callable(v) else v.__name__ for k, v in vars(self).items()
         }
         with open(os.path.join(self.work_dir, "hparams.yml"), "w") as f:
             yaml.dump(hparams, f)
-        print("exiting save_hyperparams")
+        # print("exiting save_hyperparams")
 
     def run(self):
         """ Run optimization based on hyperparameters initialized
         """
-        print("entering run function")
+        # print("entering run function")
         for gen_ in range(self.generations):
             print(f"THIS IS THE BEGINNING OF THE LOOP:{gen_} ")
 
@@ -205,7 +205,7 @@ class JANUS:
                 self.fitness, self.population, self.generation_size
             )
             replace_smiles = list(replace_smiles)
-            print(f"Replace smiles: {replace_smiles}")
+            # print(f"Replace smiles: {replace_smiles}")
 
             ### EXPLORATION ###
             # Mutate and crossover (with keep_smiles) molecules that are meant to be replaced
@@ -271,7 +271,7 @@ class JANUS:
 
             # Calculate actual fitness for the exploration population
             self.population = keep_smiles + replaced_pop
-            print(self.population)
+            # print(self.population)
             self.fitness = []
             for smi in self.population:
                 if smi in self.smiles_collector:
@@ -281,7 +281,7 @@ class JANUS:
                 else:
                     # make a calculation
                     f = self.fitness_function(smi)
-                    print("calculated a fitness")
+                    # print("calculated a fitness")
                     self.fitness.append(f)
                     self.smiles_collector[smi] = [f, 1]
 
@@ -328,7 +328,7 @@ class JANUS:
             exploit_smiles = []
             timeout_counter = 0
             while len(exploit_smiles) < self.generation_size:
-                print(f"EXPLOIT SMILES LENGTH: {len(exploit_smiles)}\n GENERATION SIZE :{self.generation_size}")
+                # print(f"EXPLOIT SMILES LENGTH: {len(exploit_smiles)}\n GENERATION SIZE :{self.generation_size}")
                 smiles_local_search = population_sort[0 : self.top_mols]
                 mut_smi_loc = self.mutate_smi_list(smiles_local_search, "local")
                 mut_smi_loc = self.check_filters(mut_smi_loc)
@@ -339,9 +339,11 @@ class JANUS:
                         exploit_smiles.append(x)
 
                 timeout_counter += 1
-                if timeout_counter % 100 == 0:
+                if timeout_counter % 10 == 0:
+                    exploit_smiles = list(population_sort[0 : self.top_mols]) + list(exploit_smiles)
                     print(f'Exploitation: {timeout_counter} iterations of filtering. \
                     Filter may be too strict, or you need more mutations/crossovers.')
+                    break
 
             # sort by similarity, only keep ones similar to best
             fp_scores = get_fp_scores(exploit_smiles, population_sort[0])
@@ -492,7 +494,7 @@ class JANUS:
         except:
             keep_smiles = [population[i] for i in idx_sort[:keep_idx]]
             replace_smiles = [population[i] for i in idx_sort[keep_idx:]]
-        print('exiting get_return_bad_smiles')
+        # print('exiting get_return_bad_smiles')
         return keep_smiles, replace_smiles
 
     def log(self):

@@ -16,16 +16,16 @@ def fitness_function(smi: str) -> float:
     """
     # calculatig the % TRE (Topological Resonance Energy) of a molecule
     # currently defined for molecules containing ONLY C and H
-    print("entering tre fitness function")
-    print(f"Smiles:{smi}\n")
+    # print("entering tre fitness function")
+    # print(f"Smiles:{smi}\n")
     mol = Chem.MolFromSmiles(smi)
     input_data, _ = coulson.interface.process_rdkit_mol(mol)
     huckel_matrix, electrons = coulson.huckel.prepare_huckel_matrix(
         input_data.atom_types, input_data.connectivity_matrix
     )
-    tre, p_tre = coulson.graph_aromaticity.calculate_tre(input_data.connectivity_matrix, sum(electrons))
-    print(f"exiting tre fitness for: {smi}\n")
-    return -p_tre
+    tre, p_tre = coulson.graph_aromaticity.calculate_tre(huckel_matrix, sum(electrons), multiplicity=3)
+    # print(f"exiting tre fitness for: {smi}\n")
+    return p_tre
 
 def custom_filter(smi: str):
     """ Function that takes in a smile and returns a boolean.
@@ -47,11 +47,11 @@ if __name__ == "__main__":
     # all parameters to be set, below are defaults
     params_dict = {
         # Number of iterations that JANUS runs for
-        "generations": 50,
+        "generations": 20,
 
         # The number of molecules for which fitness calculations are done,
         # exploration and exploitation each have their own population
-        "generation_size": 20,
+        "generation_size": 10,
 
         # Number of molecules that are exchanged between the exploration and exploitation
         "num_exchanges": 5,
@@ -60,10 +60,10 @@ if __name__ == "__main__":
         "custom_filter": custom_filter,
 
         # Fragments from starting population used to extend alphabet for mutations
-        "use_fragments": True,
+        "use_fragments": False,
 
         # An option to use a classifier as selection bias
-        "use_classifier": True,
+        "use_classifier": False,
     }
 
     # Set your SELFIES constraints (below used for manuscript)
@@ -83,8 +83,8 @@ if __name__ == "__main__":
         **params_dict
     )
 
-    p_tre = fitness_function('C1=CC=CC=C1')
-    print(p_tre)
+    # p_tre = fitness_function('C1=CC=CC=C1')
+    # print(p_tre)
 
     # Alternatively, you can get hyperparameters from a yaml file
     # Descriptions for all parameters are found in default_params.yml

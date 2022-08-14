@@ -43,6 +43,9 @@ benzene = 'C1=CC=CC=C1'
 napthalene = 'c1ccc2ccccc2c1'
 anthracene = 'C1=CC=C2C=C3C=CC=CC3=CC2=C1'
 unknown_mol = 'c1ccc2cc3cc4cc5cc6cc7cc8cc9cc%10cc%11ccccc%11cc%10cc9cc8cc7cc6cc5cc4cc3cc2c1'
+unknown_mol2 = 'c1ccc2c(c1)cc1cc3ccc4c5ccccc5c5c6c7ccccc7c7ccccc7c6c6cc7cccc8c7c7c6c5c4c3c7c1c28'
+
+smarts = "[#6&x2]"  # to find nitrogen
 
 # add a benzene ring
 add_smirks = "[c;H1:1][c;H1:2]>>[c:1]1[c:3][c:4][c:5][c:6][c:2]1"
@@ -56,12 +59,16 @@ bay_smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:
 
 if __name__ == "__main__":
     # load_file_with_new_molecules(file_path, napthalene, add_reaction)
-    anthracene_mol = AllChem.MolFromSmiles(anthracene)
-    reactants = [anthracene_mol]
-    products = break_reaction.RunReactants(reactants)
-    mol = products[1][0]
-    print(len(products))
-    Draw.MolToFile(mol, "molecule.png")
+
+    mol = AllChem.MolFromSmiles(unknown_mol2)
+    Draw.MolToFile(mol, "unknown_mol.png")
+
+    # anthracene_mol = AllChem.MolFromSmiles(anthracene)
+    # reactants = [anthracene_mol]
+    # products = break_reaction.RunReactants(reactants)
+    # mol = products[1][0]
+    # print(len(products))
+    # Draw.MolToFile(mol, "molecule.png")
     
     # print(AllChem.MolToSmiles(products[0][0]))
     # print(len(products[0]))
