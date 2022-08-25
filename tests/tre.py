@@ -20,10 +20,10 @@ def fitness_function(smi: str) -> float:
     # print(f"Smiles:{smi}\n")
     mol = Chem.MolFromSmiles(smi)
     input_data, _ = coulson.interface.process_rdkit_mol(mol)
-    huckel_matrix, electrons = coulson.huckel.prepare_huckel_matrix(
+    huckel_matrix, electrons = coulson.huckel.prepare_huckel_matrix( 
         input_data.atom_types, input_data.connectivity_matrix
     )
-    tre, p_tre = coulson.graph_aromaticity.calculate_tre(huckel_matrix, sum(electrons), multiplicity=3)
+    tre, p_tre = coulson.graph_aromaticity.calculate_tre(huckel_matrix, sum(electrons))
     # print(f"exiting tre fitness for: {smi}\n")
     return p_tre
 

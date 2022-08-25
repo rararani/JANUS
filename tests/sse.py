@@ -24,9 +24,9 @@ def fitness_function(smi: str) -> float:
     cycle_basis = coulson.graph_aromaticity.minimum_cycle_basis(
         input_data.connectivity_matrix)
     sses = [coulson.graph_aromaticity.calculate_sse(huckel_matrix, sum(electrons), coordinates,
-                                                    ring=cycle, cycle_basis=cycle_basis) for cycle in cycle_basis]
+                                                    ring=cycle, cycle_basis=cycle_basis, multiplicity=3) for cycle in cycle_basis]
 
-    return max(sses)
+    return min(sses)
 
 def custom_filter(smi: str):
     """ Function that takes in a smile and returns a boolean.
@@ -46,11 +46,11 @@ if __name__ == "__main__":
     # all parameters to be set, below are defaults
     params_dict = {
         # Number of iterations that JANUS runs for
-        "generations": 50,
+        "generations": 20,
 
         # The number of molecules for which fitness calculations are done, 
         # exploration and exploitation each have their own population
-        "generation_size": 100,
+        "generation_size": 10,
         
         # Number of molecules that are exchanged between the exploration and exploitation
         "num_exchanges": 5,
@@ -59,10 +59,10 @@ if __name__ == "__main__":
         "custom_filter": custom_filter,
 
         # Fragments from starting population used to extend alphabet for mutations
-        "use_fragments": True,
+        "use_fragments": False,
 
         # An option to use a classifier as selection bias
-        "use_classifier": True,
+        "use_classifier": False,
     }
 
     # Set your SELFIES constraints (below used for manuscript)

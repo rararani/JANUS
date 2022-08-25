@@ -33,11 +33,13 @@ def mutate_smiles(smi, num_mutations = 1):
     del_ring_smirks = "[c;R2:1][c;R2:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]>>[c:1][c:2]"
     fill_bay_smirks = "[c:1]1([c:2]([c;H1:3][c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c;H1:14]1>>[c:1]1([c:2]([c:3]([c:15][c:16]4)[c:4][c:5][c:6]2)[c:7]2[c:8][c:9]3)[c:10]3[c:11][c:12][c:13][c:14]14"
     break_mol_smirks = "[c;R2:1]1([c:2][c:3][c:4][c:5]2)[c;R2:6]2[c:7][c:8][c:9][c:10]1>>[c:1]1[c:2][c:3][c:4][c:5][c:6]1.[c:11]1[c:12][c:7][c:8][c:9][c:10]1"
+    add_nitrogen_smirks = "[#6&x2:1]>>[#7:1]"
     
     add_rxn = AllChem.ReactionFromSmarts(add_ring_smirks)
     del_rxn = AllChem.ReactionFromSmarts(del_ring_smirks)
     fill_bay_rxn = AllChem.ReactionFromSmarts(fill_bay_smirks)
     break_mol_rxn = AllChem.ReactionFromSmarts(break_mol_smirks)
+    add_nitrogen_rxn = AllChem.ReactionFromSmarts(add_nitrogen_smirks)
 
     mol_from_smiles = AllChem.MolFromSmiles(smi)
 
@@ -47,7 +49,7 @@ def mutate_smiles(smi, num_mutations = 1):
 
         for _ in range(num_mutations):
 
-            choice = random.randint(0,3)
+            choice = random.randint(0,4)
             # print(f"Choice: {choice}")
 
             # first check if there even is a bay area to fill
@@ -63,6 +65,9 @@ def mutate_smiles(smi, num_mutations = 1):
             elif choice == 2:
                 products = add_rxn.RunReactants(reacts)
                 # print("Added a benzene ring.")
+            elif choice == 3:
+                products = add_nitrogen_rxn.RunReactants(reacts)
+                # print(f"Resulting smile: {AllChem.MolToSmiles(products[0][0])}")
             else:
                 products = break_mol_rxn.RunReactants(reacts)
                 # print("Broke molecule into constituent parts.")
