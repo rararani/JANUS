@@ -24,7 +24,7 @@ def fitness_function(smi: str) -> float:
     cycle_basis = coulson.graph_aromaticity.minimum_cycle_basis(
         input_data.connectivity_matrix)
     sses = [coulson.graph_aromaticity.calculate_sse(huckel_matrix, sum(electrons), coordinates,
-                                                    ring=cycle, cycle_basis=cycle_basis, multiplicity=3) for cycle in cycle_basis]
+                                                    ring=cycle, cycle_basis=cycle_basis) for cycle in cycle_basis]
 
     return min(sses)
 

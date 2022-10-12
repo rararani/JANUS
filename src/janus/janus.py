@@ -67,6 +67,8 @@ class JANUS:
         self.exploit_num_random_samples = exploit_num_random_samples
         self.exploit_num_mutations = exploit_num_mutations
         self.top_mols = top_mols
+        self.top_explore_mols = []
+        self.top_local_mols = []
 
         # create dump folder
         if not os.path.isdir(f"./{self.work_dir}"):
@@ -289,6 +291,7 @@ class JANUS:
             idx_sort = np.argsort(self.fitness)[::-1]
             print(f"    (Explr) Top Fitness: {self.fitness[idx_sort[0]]}")
             print(f"    (Explr) Top Smile: {self.population[idx_sort[0]]}")
+            self.top_explore_mols.append(self.fitness[idx_sort[0]])
 
             fitness_sort = np.array(self.fitness)[idx_sort]
             if self.verbose_out:
@@ -367,6 +370,7 @@ class JANUS:
             ]  # index of highest to lowest fitness scores
             print(f"    (Local) Top Fitness: {self.fitness_loc[idx_sort[0]]}")
             print(f"    (Local) Top Smile: {self.population_loc[idx_sort[0]]}")
+            self.top_local_mols.append(self.fitness_loc[idx_sort[0]])
 
             fitness_sort = np.array(self.fitness_loc)[idx_sort]
             if self.verbose_out:
@@ -433,8 +437,8 @@ class JANUS:
                 f.writelines(
                     f"Gen:{gen_}, {self.population[fit_all_best]}, {self.fitness[fit_all_best]} \n"
                 )
-        print("exiting run function")
-        return
+        print("exiting run function and returning lists")
+        return self.top_explore_mols, self.top_local_mols
 
     @staticmethod
     def get_good_bad_smiles(fitness, population, generation_size):
